@@ -4,28 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New</title>
-    <link rel="stylesheet" href="styles/reset.css">
-    <link rel="stylesheet" href="styles/base.css">
-    <link rel="stylesheet" href="styles/layout.css">
-    <link rel="stylesheet" href="styles/modules.css">
-    <link rel="stylesheet" href="styles/icons.css">
-
 </head>
 <body>
     <header>
-        <h1> Search by Title or Auther </h1>
+        <h1> Search by Title or Author </h1>
     </header>
     <main>
-        <form action="get">
-            <input type="text" placeholder="Enter a Title or Auther"><br>
-            <label>Title
-            <input type="radio" name="title">
-            </label><br>
-            <label>Auther
-            <input type="radio" name="auther">
-            </label><br>
-            <button>Search for Google Books API </button>
-          </form>
+        <form action="/searches" method="post">
+        <input type="text" placeholder="Enter a Title or Author" name="search"><br>
+        <label>Title
+        <input type="radio" name="radio" value="title">
+        </label><br>
+        <label>Author
+        <input type="radio" name="radio" value="author">
+        </label><br>
+        <button>Search for Google Books API </button>
+      </form>
     </main>
 </body>
 </html>
