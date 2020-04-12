@@ -1,8 +1,7 @@
-
-
-
-h1{
-    font-size: 55px;
-    background-color: blue;
-    margin: 10px auto;
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
+@media (min-width: 375px) {
+body{
+    background-color: darkgray;
+    font-family:'PT Sans', sans-serif;
+}
 }
