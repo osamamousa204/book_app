@@ -17,6 +17,11 @@ const superagent = require('superagent')
 
 const PORT = process.env.PORT || 3030
 
+//****************(pg and client)*******************\\
+
+const pg = require('pg');
+
+const client = new pg.Client(process.env.DATABASE_URL)
 //************(app variable)***************\\
 
 const  app = express();
@@ -26,32 +31,43 @@ app.use(express.urlencoded({extended:true}));
 app.set('view engine', 'ejs');
 
 
-
-//*****************(test)*******************\\
-
-
-// app.get('/hello',(req,res)=>{
-//   res.render('./pages/index');
-//   // res.status(200).send('okkkkkkkkk');
-// })
-
-//*****************(test)*******************\\
+//*****************(home page)*******************\\
 
 app.get('/index' , (req,res)=>{
   res.render('./pages/index');
 })
-app.get('/' , (req,res)=>{
-  res.render('./pages/index');
-})
+
+app.get('/' , getDataFromDB);
+function getDataFromDB(req,res){
+  const SQL = 'SELECT * FROM books;';
+  client.query(SQL)
+    .then(result =>{
+      res.render('./pages/index',{data:result.rows})
+    })
+}
 
 app.get('/searches/new',(req,res)=>{
   res.render('./pages/searches/new');
 })
 
-//*****************(the main route)*******************\\
+//*****************(the books route)*******************\\
+app.get('/books/:books_id' , booksDeatail);
 
+function booksDeatail (request , response){
+let sql = `SELECT * FROM books WHERE id = $1; `;
+let safeValues = [request.params.books_id];
+return client.query(sql,safeValues)
+.then(result=>{
+  response.render('./pages/books/show',{data : result.rows[0]})
+  // response.redirect('./show')
+})
+}
 
+// app.get('/show' , showBooksDeatail);
 
+// function showBooksDeatail  (request , response){
+//  return response.render('./pages/books/show')
+// }
 
 //********************(the search route)***********************\\
 
@@ -74,20 +90,20 @@ app.post('/searches',(request,response)=>{
 //********************(constructor)***********************\\
 
 function Book (value){
-  if(value.volumeInfo.imageLinks.smallThumbnail === null) {
-    this.image = 'https://www.freeiconspng.com/uploads/book-icon--icon-search-engine-6.png';
-  } else {
-    this.image = value.volumeInfo.imageLinks.smallThumbnail;
-  }
-  this.title = value.volumeInfo.title;
-  this.author= value.volumeInfo.authors[0];
-  this.description = value.volumeInfo.description;
+  this.image = value.volumeInfo.imageLinks.smallThumbnail ? value.volumeInfo.imageLinks.smallThumbnail: 'https://www.freeiconspng.com/uploads/book-icon--icon-search-engine-6.png';
+  this.title = value.volumeInfo.title ? value.volumeInfo.title : 'No book with this title' ;
+  this.author= value.volumeInfo.authors[0] ? value.volumeInfo.authors[0]: 'No books for this author';
+  this.description = value.volumeInfo.description ? value.volumeInfo.description:'....';
+  this.isbn = value.volumeInfo.industryIdentifiers[0].type + value.volumeInfo.industryIdentifiers[0].identifier ? value.volumeInfo.industryIdentifiers[0].type + value.volumeInfo.industryIdentifiers[0].identifier : '000000';
 }
 
 //************(listening to port)***********\\
+client.connect()
+.then(()=>{
+  app.listen(PORT,()=>{
+      console.log(`Listening on PORT ${PORT}`)
+  })
 
-app.listen(PORT,()=>{
-    console.log(`Listening on PORT ${PORT}`)
 })
 
 //***************(error handler)**************\\

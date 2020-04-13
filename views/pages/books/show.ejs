@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <%- include ('../../layout/head') %>
+
+<body>
+  <%- include ('../../layout/header') %>
+  <header>
+    <h1>details</h1>
+  </header>
+
+  <main id="detailMain">
+    <div class="container">
+
+      <%- include ('./detail') %>
+      <button> Update Details </button>
+      <button> Delete </button>
+    </div>
+  </main>
+
+
+
+
+
+
+  <script>
+    function myFunction() {
+      var x = document.getElementById("myLinks");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+
+</html>
