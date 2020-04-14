@@ -8,10 +8,10 @@ const superagent = require('superagent');
 app.use(express.static('./public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
-const client = new pg.Client(process.env.DATABASE_URL);
 const methodOverRide = require('method-override') //////////
 app.use(methodOverRide('_method'))
+app.set('view engine', 'ejs');
+const client = new pg.Client(process.env.DATABASE_URL);
 ////////////////
 
 app.put('/update/:update_book', newUpdate);
