@@ -14,41 +14,40 @@ const client = new pg.Client(process.env.DATABASE_URL);
 
 
 //===============Routs=================\\
-app.get('/', getDataFromDB);
-app.get('/index',getDataFromDB);
-app.get('/books/:bookID', detailsFun);
-app.post('/books', saveToDB);
-app.get('/searches/new', newSearch);
-app.get('*', notFoundHandler);
+
 
 
 
 //===============Callback Functions=================\\
 
+app.get('/', getDataFromDB);
 
+app.get('/index',getDataFromDB);
 //========================================\\
 function getDataFromDB(req, res) {
   const SQL = 'SELECT * FROM books;';
   return client.query(SQL)
-    .then(result => {
-      res.render('./pages/index', { data: result.rows })
-    })
+  .then(result => {
+    res.render('./pages/index', { data: result.rows })
+  })
 }
 
 //========================================\\
+app.get('/books/:bookID', detailsFun);
 
 function detailsFun(req, res) {
   let saveId = [req.params.bookID];
   console.log(saveId);
   let sql = `SELECT * FROM books WHERE id = $1;`
   return client.query(sql, saveId)
-    .then(result => {
-      res.render('./pages/books/show', { data: result.rows[0] })
-    })
+  .then(result => {
+    res.render('./pages/books/show', { data: result.rows[0] })
+  })
 }
 
 //========================================\\
 
+app.post('/books', saveToDB);
 
 function saveToDB(req, res) {
   let ln;
@@ -58,17 +57,18 @@ function saveToDB(req, res) {
   let safeValues = [author,title,isbn,image_url, description,bookShelf];
   const SQL2 = 'SELECT * FROM books;';
   client.query(SQL2)
-    .then(result => {
-      ln=result.rows.length;
-    })
+  .then(result => {
+    ln=result.rows.length;
+  })
   return client.query(SQL, safeValues)
-    .then(() => {
-      res.redirect(`/books/${ln+1}`);
-    })
+  .then(() => {
+    res.redirect(`/books/${ln+1}`);
+  })
 }
 
 //===========================================\\
 
+app.get('/searches/new', newSearch);
 
 function newSearch (req, res) {
   res.render('./pages/searches/new');
@@ -91,7 +91,6 @@ app.post('/searches', (request, response) => {
 
 //========================================\\
 
-
 function Book(value) {
   this.image_url = value.volumeInfo.imageLinks.smallThumbnail ? value.volumeInfo.imageLinks.smallThumbnail : 'https://www.freeiconspng.com/uploads/book-icon--icon-search-engine-6.png';
   this.title = value.volumeInfo.title ? value.volumeInfo.title : 'No book with this title';
@@ -109,6 +108,7 @@ function errorHandler(err, req, res) {
 
 //========================================\\
 
+app.get('*', notFoundHandler);
 
 function notFoundHandler(req, res) {
   res.status(404).send('This route does not exist!!');
