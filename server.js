@@ -10,44 +10,69 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 const client = new pg.Client(process.env.DATABASE_URL);
+const methodOverRide = require('method-override') //////////
+app.use(methodOverRide('_method'))
+////////////////
 
+app.put('/update/:update_book', newUpdate);
+function newUpdate (req , res){
+  //collect
+  let { author, title, isbn, image_url, description ,bookShelf} = req.body;
+  //update
+  let SQL = 'UPDATE books set author=$1,title=$2,isbn=$3,image_url=$4,description=$5,bookshelf=$6 WHERE id=$7 ;';
+  //safevalues
+  let idParam = req.params.update_book;
+  let safeValues = [author,title,isbn,image_url, description,bookShelf,idParam];
+ return client.query(SQL,safeValues)
+    .then(()=>{
+      res.redirect(`/books/${idParam}`);
+    })
+}
 
 
 //===============Routs=================\\
 
-
-
+app.get('/', getDataFromDB);
+app.get('/index',getDataFromDB);
+app.get('/books/:bookID', detailsFun);
+app.post('/books', saveToDB);
+app.get('/searches/new', newSearch);
+app.get('*', notFoundHandler);
 
 //===============Callback Functions=================\\
 
-app.get('/', getDataFromDB);
-
-app.get('/index',getDataFromDB);
-//========================================\\
 function getDataFromDB(req, res) {
   const SQL = 'SELECT * FROM books;';
   return client.query(SQL)
-  .then(result => {
-    res.render('./pages/index', { data: result.rows })
-  })
+    .then(result => {
+      res.render('./pages/index', { data: result.rows })
+    })
+}
+//////////////
+
+
+app.delete('/delete/:deleted_book',deletBook);
+function deletBook(req,res){
+  let idParam = req.params.deleted_book;
+  let saveID = [idParam];
+  let sql = 'DELETE  FROM books WHERE id=$1;';
+  return client.query(sql,saveID)
+    .then(()=>{
+      res.redirect('/');
+    })
 }
 
-//========================================\\
-app.get('/books/:bookID', detailsFun);
 
 function detailsFun(req, res) {
   let saveId = [req.params.bookID];
   console.log(saveId);
   let sql = `SELECT * FROM books WHERE id = $1;`
-  return client.query(sql, saveId)
-  .then(result => {
-    res.render('./pages/books/show', { data: result.rows[0] })
-  })
+   client.query(sql, saveId)
+    .then(result => {
+      res.render('./pages/books/show', { data: result.rows[0] })
+    })
 }
 
-//========================================\\
-
-app.post('/books', saveToDB);
 
 function saveToDB(req, res) {
   let ln;
@@ -57,22 +82,21 @@ function saveToDB(req, res) {
   let safeValues = [author,title,isbn,image_url, description,bookShelf];
   const SQL2 = 'SELECT * FROM books;';
   client.query(SQL2)
-  .then(result => {
-    ln=result.rows.length;
-  })
+    .then(result => {
+      ln=result.rows.length;
+    })
   return client.query(SQL, safeValues)
-  .then(() => {
-    res.redirect(`/books/${ln+1}`);
-  })
+    .then(() => {
+      res.redirect(`/books/${ln+1}`);
+    })
 }
 
-//===========================================\\
-
-app.get('/searches/new', newSearch);
 
 function newSearch (req, res) {
   res.render('./pages/searches/new');
 }
+
+
 app.post('/searches', (request, response) => {
   const inputt = request.body.search;
   const radio = request.body.radio;
@@ -89,32 +113,24 @@ app.post('/searches', (request, response) => {
     });
 })
 
-//========================================\\
 
 function Book(value) {
   this.image_url = value.volumeInfo.imageLinks.smallThumbnail ? value.volumeInfo.imageLinks.smallThumbnail : 'https://www.freeiconspng.com/uploads/book-icon--icon-search-engine-6.png';
   this.title = value.volumeInfo.title ? value.volumeInfo.title : 'No book with this title';
   this.author = value.volumeInfo.authors[0] ? value.volumeInfo.authors[0] : 'No books for this author';
-  this.description = value.volumeInfo.description ? value.volumeInfo.description : '....';
+  this.description = value.volumeInfo.description ? value.volumeInfo.description : 'No discription for this book';
   this.isbn = value.volumeInfo.industryIdentifiers[0].type + value.volumeInfo.industryIdentifiers[0].identifier ? value.volumeInfo.industryIdentifiers[0].type + value.volumeInfo.industryIdentifiers[0].identifier : '000000';
 }
-
-//========================================\\
 
 
 function errorHandler(err, req, res) {
   res.status(500).send(err);
 }
 
-//========================================\\
-
-app.get('*', notFoundHandler);
 
 function notFoundHandler(req, res) {
   res.status(404).send('This route does not exist!!');
 }
-
-//========================================\\
 
 
 client.connect()
