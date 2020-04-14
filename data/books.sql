@@ -6,9 +6,6 @@ CREATE TABLE books(
     isbn VARCHAR(255),
     image_url VARCHAR(255),
     description  TEXT,
-    bookshel VARCHAR(255)
+    bookshelf VARCHAR(255)
 );
 
-INSERT INTO books (author,title,isbn,image_url,description,bookshel) VALUES ('Thaer','Raghad','5454545','dsjdsvdsv','fdgfdfgdfgdf','dsgdfgdf');
-INSERT INTO books (author,title,isbn,image_url,description,bookshel) VALUES ('Thaer','Raghad','5454545','dsjdsvdsv','fdgfdfgdfgdf','dsgdfgdf');
-INSERT INTO books (author,title,isbn,image_url,description,bookshel) VALUES ('Thaer','Raghad','5454545','dsjdsvdsv','fdgfdfgdfgdf','dsgdfgdf');

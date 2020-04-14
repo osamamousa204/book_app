@@ -1,13 +1,14 @@
 
     
     
- <section>
-  <img src="<%= data.image %>">
+<%- include ('../../layout/head') %>
+<link rel="stylesheet" href="../styles/modules/det-mod.css">
+<section id="my-section">
+  <img src="<%= data.image_url %>">
   <h3><%= data.title%></h3>
   <h4><%= data.author %></h4>
   <p><%= data.description %></p>
   <p><%= data.isbn %></p>
-  <p>bookShilf</p>
-  <a href="searches">Back to Books list</a>
+  <p><%= data.bookshelf %></p>
 </section>
   

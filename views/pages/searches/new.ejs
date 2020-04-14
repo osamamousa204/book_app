@@ -1,28 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
   <%- include ('../../layout/head') %>
+</head>
 <body>
-
-
-
-    <!-- Top Navigation Menu -->
-    <%- include ('../../layout/header') %>
+<!-- Top Navigation Menu -->
+<%- include ('../../layout/header') %>
     <header>
-      <h1></h1>
+        <h1> Search by Title or Author </h1>
     </header>
     <main>
         <form action="/searches" method="post">
-        <input required type="text" placeholder="Enter a Title or Author" name="search"><br>
+        <input type="text" placeholder="Enter a Title or Author" name="search" required><br>
         <label>Title
-        <input required type="radio" name="radio" value="title">
+        <input type="radio" name="radio" value="title" required>
         </label><br>
         <label>Author
-        <input required type="radio" name="radio" value="author">
+        <input type="radio" name="radio" value="author" required>
         </label><br>
         <button>Search for Google Books API </button>
       </form>
     </main>
-    
     <script>
         function myFunction() {
           var x = document.getElementById("myLinks");
