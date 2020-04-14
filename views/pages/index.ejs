@@ -20,15 +20,16 @@
     <main id="indexMain">
       <% data.forEach(val => { %>      
         <div class="container">
-            <img src="<%= val.image_url %>">
-            <h3><%= val.title%></h3>
-            <h4><%= val.author %></h4>
-            <p><%= val.description %></p>
-            <p><%= val.isbn %></p>
-            <p><%= val.bookshelf %></p>
-            <a href="/books/<%=val.id%>"><button> View Details </button></a>
+          <img src="<%= val.image_url %>">
+          <h3><%= val.title%></h3>
+          <h4><%= val.author %></h4>
+          <p><%= val.description %></p>
+          <p><%= val.isbn %></p>
+          <p><%= val.bookshelf %></p>
+          <a href="/books/<%=val.id%>"><button class="view-button"> View Details </button></a>
         </div>
         <% }) %>
+        <% data = []%>
     </main>
     <script>
         function myFunction() {
