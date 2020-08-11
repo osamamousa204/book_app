@@ -12,7 +12,7 @@
       font-size: 19px;
       padding: 4%;
       color: white;
-      background-color: black;
+      /* background-color: black; */
   }
   input#first-radio {
     margin-left: 18%;
@@ -34,7 +34,7 @@
           text-align: center;
         }
         .topnav a.icon {
-          background: white;
+          /* background: white; */
           display: block;
           position: absolute;
           right: 0;
